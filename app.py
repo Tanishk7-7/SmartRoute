@@ -1,5 +1,5 @@
 from collections import deque
-from hospital import hospitals , find_hospitals_by_specialzation
+from hospital import hospitals , find_hospitals_by_specialzation, add_hospital, edit_hospital, remove_hospital
 import heapq
 class Graph:
     def __init__(self):
@@ -136,58 +136,141 @@ def find_hospital(g,source , emergency):
 
 
 g.add_location("A")
-
 g.add_road("A", "B", 5)
-g.add_road("A", "C", 3)
-g.add_road("B", "D", 4)
-g.add_road("C", "D", 2)
+g.add_road("A", "E", 4)
+g.add_road("B", "C", 6)
+g.add_road("B", "F", 3)
+g.add_road("C", "D", 4)
+g.add_road("E", "F", 5)
+g.add_road("F", "G", 4)
+g.add_road("F", "I", 6)
+g.add_road("G", "H", 5)
+g.add_road("H", "J", 3)
+g.add_road("G", "C", 3)
+g.add_road("I", "J", 4)
+g.add_road("D", "H", 6)
 
-# print(g.graph)
 
-# print(g.get_neighbors("A"))
-# print(g.get_neighbors("B"))
-# #g.remove_road("C","D")
-# #print("Road from A to B is closed then")
-# print(g.get_neighbors("A"))
-# print(g.get_neighbors("B"))
+while True:
 
-# g.bfs("D","C")
-# print("DFS traversal:")
-# g.dfs("A", "D")
+    print("\n===== SmartRoute =====")
+    print("1. Find Hospital")
+    print("2. Hospital Management")
+    print("3. Road Management")
+    print("4. Exit")
 
-# heap = []
+    choice = input("Enter choice: ")
 
-# heapq.heappush(heap, (5, "A"))
-# heapq.heappush(heap, (2, "B"))
-# heapq.heappush(heap, (8, "C"))
-# heapq.heappush(heap, (1, "D"))
+    match choice:
 
-# print(heap)
+        case "1":
+            print("\n--- Find Hospital ---")
 
-# print(heapq.heappop(heap))
-# print(heapq.heappop(heap))
-# print(heapq.heappop(heap))
-# print(heapq.heappop(heap))
+            source = input("Enter your location: ")
+            emergency = input("Enter emergency type: ").title()
 
-# g.update_road("C", "D", 20)
+            name, path, dist = find_hospital(g, source, emergency)
 
-# print("Shortest distance:")
-# path, distance = g.dijkstra("A", "D")
+            if dist == float("inf"):
+                print("No suitable hospital or route found")
+            else:
+                print("Hospital:", name)
+                print("Route:", " -> ".join(path))
+                print("Distance:", dist)
 
-# print(path)
-# print(distance)
+        case "2":
+            print("\n--- Hospital Management ---")
+            print("1. Add Hospital")
+            print("2. Edit Hospital")
+            print("3. Remove Hospital")
+            print("4. Back")
 
-name, path, dist = find_hospital(g, "A", "Cardiology")
+            choice = input("Enter choice: ")
 
-print(name)
-print(path)
-print(dist)
+            match choice:
+                case "1":
+                    
+                    name = input("Enter hospital name: ")
+                    location = input("Enter location: ")
+                    specializations = input("Enter specializations: ").split(",")
+                    beds = int(input("Enter beds: "))
+                    icu = int(input("Enter ICU beds: "))
 
-source = input("Enter your location: ")
-emergency = input("Enter emergency type: ")
+                    add_hospital(name, location, specializations, beds, icu)
 
-name, path, dist = find_hospital(g, source, emergency)
+                    print("Hospital added")
 
-print("Hospital:", name)
-print("Route:", " -> ".join(path))
-print("Distance:", dist)
+                case "2":
+                        name = input("Enter hospital name: ")
+                        location = input("Enter new location: ")
+                        specializations = input("Enter specializations: ").split(",")
+                        beds = int(input("Enter beds: "))
+                        icu = int(input("Enter ICU beds: "))
+
+                        edit_hospital(name, location, specializations, beds, icu)
+
+                        print("Hospital updated")
+
+                case "3":
+                       name = input("Enter hospital name: ")
+                       remove_hospital(name)
+                       print("Hospital removed")
+
+                case "4":
+                    continue
+
+        case "3":
+            print("\n--- Road Management ---")
+            print("1. Add Road")
+            print("2. Update Traffic")
+            print("3. Close Road")
+            print("4. Open Road")
+            print("5. Back")
+
+            choice = input("Enter choice: ")
+
+            match choice:
+                case "1":
+                    source = input("Enter source: ")
+                    destination = input("Enter destination: ")
+                    distance = int(input("Enter distance: "))
+
+                    g.add_road(source, destination, distance)
+
+                    print("Road added")
+
+                case "2":
+                    source = input("Enter source: ")
+                    destination = input("Enter destination: ")
+                    distance = int(input("Enter new distance: "))
+
+                    g.update_road(source, destination, distance)
+
+                    print("Traffic updated")
+
+                case "3":
+                    source = input("Enter source: ")
+                    destination = input("Enter destination: ")
+
+                    g.remove_road(source, destination)
+
+                    print("Road closed")
+
+                case "4":
+                    source = input("Enter source: ")
+                    destination = input("Enter destination: ")
+                    distance = int(input("Enter distance: "))
+
+                    g.add_road(source, destination, distance)
+
+                    print("Road opened")
+
+                case "5":
+                    continue
+
+        case "4":
+            print("Exiting SmartRoute...")
+            break
+
+        case _:
+            print("Invalid choice")
