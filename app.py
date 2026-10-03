@@ -1,4 +1,5 @@
 from collections import deque
+from hospital import hospitals , find_hospitals_by_specialzation
 import heapq
 class Graph:
     def __init__(self):
@@ -25,15 +26,11 @@ class Graph:
         self.graph[destination].remove((source,a))
 
     def update_road(self , source , destination , new_distance):
-        for road in self.graph[source]:
-            self.graph[source].remove(road)
-            self.graph[source].append((destination, new_distance))
-            break
+        self.remove_road(source,destination)
+        self.add_road(source,destination,new_distance)
 
-        for road in self.graph[destination]:
-            self.graph[destination].remove(road)
-            self.graph[destination].append((source, new_distance))
-            break
+        self.remove_road(destination,source)
+        self.add_road(destination,source,new_distance)
 
     def bfs(self, source, destination):
         visited = set()
@@ -123,6 +120,21 @@ class Graph:
 
 g = Graph()
 
+def find_hospital(g,source , emergency):
+    suitable = find_hospitals_by_specialzation(emergency)
+    closest = float("inf")
+    name1 = "No hospital found"
+    path1 = []
+    for name in suitable:
+        loc = hospitals[name]["location"]
+        path , dist = g.dijkstra(source,loc)
+        if dist < closest:
+            closest = dist
+            name1 = name
+            path1 = path
+    return name1 , path1, closest
+
+
 g.add_location("A")
 
 g.add_road("A", "B", 5)
@@ -130,37 +142,52 @@ g.add_road("A", "C", 3)
 g.add_road("B", "D", 4)
 g.add_road("C", "D", 2)
 
-print(g.graph)
+# print(g.graph)
 
-print(g.get_neighbors("A"))
-print(g.get_neighbors("B"))
-#g.remove_road("C","D")
-#print("Road from A to B is closed then")
-print(g.get_neighbors("A"))
-print(g.get_neighbors("B"))
+# print(g.get_neighbors("A"))
+# print(g.get_neighbors("B"))
+# #g.remove_road("C","D")
+# #print("Road from A to B is closed then")
+# print(g.get_neighbors("A"))
+# print(g.get_neighbors("B"))
 
-g.bfs("D","C")
-print("DFS traversal:")
-g.dfs("A", "D")
+# g.bfs("D","C")
+# print("DFS traversal:")
+# g.dfs("A", "D")
 
-heap = []
+# heap = []
 
-heapq.heappush(heap, (5, "A"))
-heapq.heappush(heap, (2, "B"))
-heapq.heappush(heap, (8, "C"))
-heapq.heappush(heap, (1, "D"))
+# heapq.heappush(heap, (5, "A"))
+# heapq.heappush(heap, (2, "B"))
+# heapq.heappush(heap, (8, "C"))
+# heapq.heappush(heap, (1, "D"))
 
-print(heap)
+# print(heap)
 
-print(heapq.heappop(heap))
-print(heapq.heappop(heap))
-print(heapq.heappop(heap))
-print(heapq.heappop(heap))
+# print(heapq.heappop(heap))
+# print(heapq.heappop(heap))
+# print(heapq.heappop(heap))
+# print(heapq.heappop(heap))
 
-g.update_road("C", "D", 20)
+# g.update_road("C", "D", 20)
 
-print("Shortest distance:")
-path, distance = g.dijkstra("A", "D")
+# print("Shortest distance:")
+# path, distance = g.dijkstra("A", "D")
 
+# print(path)
+# print(distance)
+
+name, path, dist = find_hospital(g, "A", "Cardiology")
+
+print(name)
 print(path)
-print(distance)
+print(dist)
+
+source = input("Enter your location: ")
+emergency = input("Enter emergency type: ")
+
+name, path, dist = find_hospital(g, source, emergency)
+
+print("Hospital:", name)
+print("Route:", " -> ".join(path))
+print("Distance:", dist)

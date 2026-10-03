@@ -28,4 +28,4 @@ def find_hospitals_by_specialzation(emergency_type):
     
     return suitable
 
-print(find_hospitals_by_specialzation("Cardiology"))
+#print(find_hospitals_by_specialzation("Cardiology"))
