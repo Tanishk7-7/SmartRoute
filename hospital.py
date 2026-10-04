@@ -1,60 +1,11 @@
-hospitals = {
-    "City Care": {
-        "location": "B",
-        "specializations": ["Cardiology", "Emergency"],
-        "beds": 10,
-        "icu": 3
-    },
+import json
+with open("data/hospitals.json","r") as file:
+    hospitals = json.load(file)
 
-    "Metro Hospital": {
-        "location": "C",
-        "specializations": ["Trauma", "Emergency"],
-        "beds": 15,
-        "icu": 4
-    },
+def  save_hospitals():
+    with open("data/hospitals.json", "w") as file:
+        json.dump(hospitals, file, indent=4)
 
-    "LifeLine Hospital": {
-        "location": "D",
-        "specializations": ["Cardiology", "Trauma"],
-        "beds": 12,
-        "icu": 5
-    },
-
-    "Green Valley": {
-        "location": "E",
-        "specializations": ["Emergency", "Neurology"],
-        "beds": 8,
-        "icu": 2
-    },
-
-    "Sunrise Hospital": {
-        "location": "F",
-        "specializations": ["Cardiology", "Neurology"],
-        "beds": 20,
-        "icu": 6
-    },
-
-    "Apollo Care": {
-        "location": "G",
-        "specializations": ["Trauma", "Emergency"],
-        "beds": 14,
-        "icu": 3
-    },
-
-    "City General": {
-        "location": "H",
-        "specializations": ["Emergency", "Cardiology", "Trauma"],
-        "beds": 25,
-        "icu": 8
-    },
-
-    "Hope Hospital": {
-        "location": "I",
-        "specializations": ["Neurology", "Emergency"],
-        "beds": 9,
-        "icu": 2
-    }
-}
 def find_hospitals_by_specialzation(emergency_type):
     suitable = []
     for name , details in hospitals.items():
@@ -69,11 +20,14 @@ def add_hospital(name, location, specializations, beds, icu):
         "beds": beds,
         "icu": icu
     }
+    save_hospitals()
 def edit_hospital(name, location, specializations, beds, icu):
     hospitals[name]["location"] = location
     hospitals[name]["specializations"] = specializations
     hospitals[name]["beds"] = beds
     hospitals[name]["icu"] = icu
+    save_hospitals()
 
 def remove_hospital(name):
     del hospitals[name]
+    save_hospitals()

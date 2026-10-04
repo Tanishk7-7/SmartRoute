@@ -1,0 +1,67 @@
+[
+    {
+        "source": "A",
+        "destination": "B",
+        "distance": 5
+    },
+    {
+        "source": "A",
+        "destination": "E",
+        "distance": 4
+    },
+    {
+        "source": "B",
+        "destination": "C",
+        "distance": 6
+    },
+    {
+        "source": "B",
+        "destination": "F",
+        "distance": 3
+    },
+    {
+        "source": "E",
+        "destination": "F",
+        "distance": 5
+    },
+    {
+        "source": "C",
+        "destination": "D",
+        "distance": 4
+    },
+    {
+        "source": "C",
+        "destination": "G",
+        "distance": 3
+    },
+    {
+        "source": "F",
+        "destination": "G",
+        "distance": 4
+    },
+    {
+        "source": "F",
+        "destination": "I",
+        "distance": 6
+    },
+    {
+        "source": "D",
+        "destination": "H",
+        "distance": 6
+    },
+    {
+        "source": "G",
+        "destination": "H",
+        "distance": 5
+    },
+    {
+        "source": "I",
+        "destination": "J",
+        "distance": 4
+    },
+    {
+        "source": "H",
+        "destination": "J",
+        "distance": 3
+    }
+]

@@ -1,6 +1,8 @@
 from collections import deque
 from hospital import hospitals , find_hospitals_by_specialzation, add_hospital, edit_hospital, remove_hospital
 import heapq
+import json
+
 class Graph:
     def __init__(self):
         self.graph= {}
@@ -33,9 +35,12 @@ class Graph:
 
         return True
 
-    def update_road(self , source , destination , new_distance):
-        self.remove_road(source,destination)
-        self.add_road(source,destination,new_distance)
+    def update_road(self, source, destination, new_distance):
+        if not self.remove_road(source, destination):
+            return False
+
+        self.add_road(source, destination, new_distance)
+        return True
 
 
     def road_exists(self, source, destination):
@@ -133,8 +138,36 @@ class Graph:
         path.reverse()
         return path , distances[destination]
 
+def update_rdata():
+    roads = []
+    seen = set()
+
+    for source in g.graph:
+        for road in g.graph[source]:
+            destination = road[0]
+            distance = road[1]
+
+            road_pair = tuple(sorted([source, destination]))
+
+            if road_pair in seen:
+                continue
+
+            seen.add(road_pair)
+
+            roads.append({
+                "source": source,
+                "destination": destination,
+                "distance": distance
+            })
+    with open("data/roads.json", "w") as file:
+        json.dump(roads,file,indent=4)
 
 g = Graph()
+with open("data/roads.json", "r") as file:
+    roads = json.load(file)
+
+for road in roads:
+    g.add_road(road["source"], road["destination"],road["distance"])
 
 def find_hospital(g,source , emergency):
     suitable = find_hospitals_by_specialzation(emergency)
@@ -149,22 +182,6 @@ def find_hospital(g,source , emergency):
             name1 = name
             path1 = path
     return name1 , path1, closest
-
-
-g.add_location("A")
-g.add_road("A", "B", 5)
-g.add_road("A", "E", 4)
-g.add_road("B", "C", 6)
-g.add_road("B", "F", 3)
-g.add_road("C", "D", 4)
-g.add_road("E", "F", 5)
-g.add_road("F", "G", 4)
-g.add_road("F", "I", 6)
-g.add_road("G", "H", 5)
-g.add_road("H", "J", 3)
-g.add_road("G", "C", 3)
-g.add_road("I", "J", 4)
-g.add_road("D", "H", 6)
 
 
 while True:
@@ -255,6 +272,7 @@ while True:
                     distance = int(input("Enter distance: "))
 
                     g.add_road(source, destination, distance)
+                    update_rdata()
 
                     print("Road added")
 
@@ -267,6 +285,7 @@ while True:
                     distance = int(input("Enter new distance: "))
 
                     g.update_road(source, destination, distance)
+                    update_rdata()
 
                     print("Traffic updated")
 
@@ -277,6 +296,7 @@ while True:
                         print("Location not found")
                         continue
                     if g.remove_road(source, destination):
+                        update_rdata()
                         print("Road closed")
                     else:
                         print("Road not found")
@@ -295,6 +315,7 @@ while True:
 
                     distance = int(input("Enter distance: "))
                     g.add_road(source, destination, distance)
+                    update_rdata()
 
                     print("Road opened")
 
