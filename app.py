@@ -18,19 +18,35 @@ class Graph:
     def get_neighbors(self, location):
      return self.graph.get(location, [])
     
-    def remove_road(self , source , destination):
+    def remove_road(self, source, destination):
+        a = None
+
         for road in self.graph[source]:
-            if road[0]== destination:
+            if road[0] == destination:
                 a = road[1]
-        self.graph[source].remove((destination,a))
-        self.graph[destination].remove((source,a))
+
+        if a is None:
+            return False
+
+        self.graph[source].remove((destination, a))
+        self.graph[destination].remove((source, a))
+
+        return True
 
     def update_road(self , source , destination , new_distance):
         self.remove_road(source,destination)
         self.add_road(source,destination,new_distance)
 
-        self.remove_road(destination,source)
-        self.add_road(destination,source,new_distance)
+
+    def road_exists(self, source, destination):
+        if source not in self.graph:
+            return False
+
+        for road in self.graph[source]:
+            if road[0] == destination:
+                return True
+
+        return False
 
     def bfs(self, source, destination):
         visited = set()
@@ -167,6 +183,9 @@ while True:
             print("\n--- Find Hospital ---")
 
             source = input("Enter your location: ")
+            if source not in g.graph:
+                print("Location not found")
+                continue
             emergency = input("Enter emergency type: ").title()
 
             name, path, dist = find_hospital(g, source, emergency)
@@ -242,6 +261,9 @@ while True:
                 case "2":
                     source = input("Enter source: ")
                     destination = input("Enter destination: ")
+                    if source not in g.graph or destination not in g.graph:
+                        print("Location not found")
+                        continue
                     distance = int(input("Enter new distance: "))
 
                     g.update_road(source, destination, distance)
@@ -251,16 +273,27 @@ while True:
                 case "3":
                     source = input("Enter source: ")
                     destination = input("Enter destination: ")
-
-                    g.remove_road(source, destination)
-
-                    print("Road closed")
+                    if source not in g.graph or destination not in g.graph:
+                        print("Location not found")
+                        continue
+                    if g.remove_road(source, destination):
+                        print("Road closed")
+                    else:
+                        print("Road not found")
 
                 case "4":
                     source = input("Enter source: ")
                     destination = input("Enter destination: ")
-                    distance = int(input("Enter distance: "))
 
+                    if source not in g.graph or destination not in g.graph:
+                        print("Location not found")
+                        continue
+
+                    if g.road_exists(source, destination):
+                        print("Road is already open")
+                        continue
+
+                    distance = int(input("Enter distance: "))
                     g.add_road(source, destination, distance)
 
                     print("Road opened")
